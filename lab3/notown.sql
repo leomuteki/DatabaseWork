@@ -1,4 +1,13 @@
-
+DROP TABLE musician CASCADE;
+DROP TABLE instrument CASCADE;
+DROP TABLE plays CASCADE;
+DROP TABLE place CASCADE;
+DROP TABLE telephone CASCADE;
+DROP TABLE home CASCADE;
+DROP TABLE lives CASCADE;
+DROP TABLE album CASCADE;
+DROP TABLE songs CASCADE;
+DROP TABLE perform CASCADE;
 
 CREATE TABLE musician  (
 	ssn numeric(9,0) NOT NULL,
@@ -31,7 +40,7 @@ CREATE TABLE telephone (
 CREATE TABLE home (
 	place text NOT NULL,
 	telephone text NOT NULL,
-	PRIMARY KEY(place, telephone),
+	PRIMARY KEY(place),
 	FOREIGN KEY(place) REFERENCES place(address),
 	FOREIGN KEY(telephone) REFERENCES telephone(phone_no));
 
@@ -60,8 +69,9 @@ CREATE TABLE songs (
 	FOREIGN KEY(appears) REFERENCES album(albumIdentifier) ON DELETE NO ACTION);
 
 CREATE TABLE perform (
-	musician numeric(9,0),
-	song text NOT NULL,
+	musician numeric(9,0) NOT NULL,
+	song int NOT NULL,
 	PRIMARY KEY(musician, song),
 	FOREIGN KEY(musician) REFERENCES musician(ssn),
-	FOREIGN KEY(song) REFERENCE songs(songID));
+	FOREIGN KEY(song) REFERENCES songs(songID));
+
