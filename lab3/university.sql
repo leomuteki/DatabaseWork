@@ -2,6 +2,7 @@ DROP TABLE professor CASCADE;
 DROP TABLE dept CASCADE;
 DROP TABLE project CASCADE;
 DROP TABLE graduate CASCADE;
+DROP TABLE work_in CASCADE;
 DROP TABLE work_proj CASCADE;
 DROP TABLE work_dept CASCADE;
 
@@ -19,20 +20,27 @@ CREATE TABLE dept (
 	office text NOT NULL,
 	runs numeric(9,0) NOT NULL,
 	PRIMARY KEY(dno),
-	FOREIGN KEY(runs) REFERENCES professor(ssn),
-	ON DELETE NO ACTION);
+	FOREIGN KEY(runs) REFERENCES professor(ssn));
 
 CREATE TABLE project (
 	pno int NOT NULL,
 	sponsor text NOT NULL,
 	start_date text NOT NULL,
 	end_date text NOT NULL,
-	budget float NOT NULL),
-	work_in numeric(9,0) NOT NULL,
+	budget float NOT NULL,
+	professor numeric(9,0) NOT NULL,
 	manage numeric(9,0) NOT NULL,
 	PRIMARY KEY(pno),
-	FOREIGN KEY(work_in) REFERENCES work_in(professor),
+	FOREIGN KEY(professor) REFERENCES professor(ssn) ON DELETE NO ACTION,
 	FOREIGN KEY(manage) REFERENCES professor(ssn));
+
+CREATE TABLE work_in (
+	professor numeric(9,0) NOT NULL,
+	project int NOT NULL,
+	PRIMARY KEY(professor, project),
+	FOREIGN KEY(professor) REFERENCES professor(ssn),
+	FOREIGN KEY(project) REFERENCES project(pno));
+
 
 CREATE TABLE graduate (
 	ssn numeric(9,0) NOT NULL CONSTRAINT graduate_key PRIMARY KEY,
@@ -41,23 +49,16 @@ CREATE TABLE graduate (
 	deg_pg text NOT NULL,
 	major int NOT NULL,
 	advise numeric(9,0) NOT NULL,
-	FOREIGN KEY(major) REFERENCES dept(dno),
-	FOREIGN KEY(advise) REFERNCES graduate(ssn));
+	FOREIGN KEY(major) REFERENCES dept(dno) ON DELETE NO ACTION,
+	FOREIGN KEY(advise) REFERENCES graduate(ssn));
 
 CREATE TABLE work_dept (
 	professor numeric(9,0) NOT NULL,
 	dept int NOT NULL,
 	time_pc int NOT NULL,
 	PRIMARY KEY(professor, dept),
-	FOREIGN KEY(professor) REFERENCES professor(ssn)),
+	FOREIGN KEY(professor) REFERENCES professor(ssn) ON DELETE NO ACTION,
 	FOREIGN KEY(dept) REFERENCES dept(dno));
-
-CREATE TABLE work_in (
-	professor numeric(9,0) NOT NULL,
-	project int NOT NULL,
-	PRIMARY KEY(professor, project),
-	FOREIGN KEY(profesor) REFERENCES professor(ssn),
-	FOREIGN KEY(project) REFERENCES professor(ssn));
 
 CREATE TABLE work_proj (
 	project int NOT NULL,
@@ -67,5 +68,5 @@ CREATE TABLE work_proj (
 	PRIMARY KEY(project, graduate),
 	FOREIGN KEY(project) REFERENCES project(pno),
 	FOREIGN KEY(graduate) REFERENCES graduate(ssn),
-	FOREIGN KEY(professor) REFERENCES professor(ssn));
+	FOREIGN KEY(professor) REFERENCES professor(ssn) ON DELETE NO ACTION);
 
